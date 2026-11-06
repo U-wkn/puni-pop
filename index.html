@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>PUNI POP! - かわいくて爽快なストレス解消ゼリーゲーム</title>
+  <meta name="description" content="ぷにぷにした感触、物を壊す爽快感、ASMRのような音、癒やし、コンボ連鎖が楽しめるブラウザゲーム。時間制限なしでいつでもリラックス。">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="game-container">
+    <!-- メインCanvas -->
+    <canvas id="game-canvas"></canvas>
+
+    <!-- 画面上部：ヘッダーバー -->
+    <header class="header-bar">
+      <div class="logo-group" id="logo-btn" title="PUNI POP!">
+        <span class="logo-icon">🫧</span>
+        <h1 class="logo-title">PUNI POP!</h1>
+      </div>
+
+      <div class="status-group">
+        <div class="badge score-badge">
+          <span class="badge-label">SCORE</span>
+          <span class="badge-value" id="score-val">0</span>
+        </div>
+        <div class="badge combo-badge" id="combo-badge">
+          <span class="badge-label">COMBO</span>
+          <span class="badge-value" id="combo-val">0</span>
+        </div>
+      </div>
+
+      <div class="header-controls">
+        <button class="icon-btn" id="btn-sound" title="サウンド切替 (SE)">🔊</button>
+        <button class="icon-btn" id="btn-bgm" title="癒やしBGM切替">🎵</button>
+        <button class="icon-btn" id="btn-settings" title="設定">⚙️</button>
+      </div>
+    </header>
+
+    <!-- 画面下部：コントロールバー -->
+    <footer class="footer-bar">
+      <div class="hint-text" id="hint-text">
+        ✨ ぷにをタッチ・クリックして遊んでね！
+      </div>
+
+      <div class="footer-inner">
+        <!-- 遊び方モード切り替え -->
+        <div class="mode-tabs">
+          <button class="mode-tab active" data-mode="squish" id="tab-squish">
+            <span>🔮</span> ぷにぷに
+          </button>
+          <button class="mode-tab" data-mode="pop" id="tab-pop">
+            <span>💥</span> ポップ！
+          </button>
+          <button class="mode-tab" data-mode="free" id="tab-free">
+            <span>✨</span> フリー
+          </button>
+        </div>
+
+        <!-- クイックアクション -->
+        <button class="action-btn btn-add" id="btn-add-puni">
+          <span>➕</span> ぷにを追加
+        </button>
+        <button class="action-btn btn-burst" id="btn-chain-burst" title="近くのぷにを一斉に連鎖ポップ！">
+          <span>⚡</span> 連鎖バースト
+        </button>
+        <button class="action-btn btn-reset" id="btn-reset" title="画面をきれいにリセット">
+          <span>🔄</span> リセット
+        </button>
+      </div>
+    </footer>
+
+    <!-- 設定・遊び方モーダル -->
+    <div class="modal-overlay" id="settings-modal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3 class="modal-title">⚙️ 設定 &amp; 遊び方</h3>
+          <button class="modal-close" id="btn-close-modal">✕</button>
+        </div>
+
+        <div class="modal-body">
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🔊 マスター音量</span>
+              <span id="label-master-vol">80%</span>
+            </div>
+            <input type="range" class="setting-slider" id="slider-master-vol" min="0" max="100" value="80">
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🫧 ASMR効果音 (SE)</span>
+              <span id="label-se-vol">85%</span>
+            </div>
+            <input type="range" class="setting-slider" id="slider-se-vol" min="0" max="100" value="85">
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>🎵 癒やしのアンビエントBGM</span>
+              <span id="label-bgm-vol">35%</span>
+            </div>
+            <input type="range" class="setting-slider" id="slider-bgm-vol" min="0" max="100" value="35">
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label">
+              <span>✨ 自動補充 (Auto Spawn)</span>
+              <input type="checkbox" id="check-auto-spawn" checked style="width: 20px; height: 20px; cursor: pointer;">
+            </div>
+          </div>
+
+          <div class="guide-box">
+            <h4>📖 PUNI POP! の楽しみ方</h4>
+            <ul>
+              <li><strong>🔮 ぷにぷにモード:</strong> 触ると「ぷにっ」、離すと「ぽよん」。引っ張って伸ばしたり、こねたりして癒やされよう！割れないので安心。</li>
+              <li><strong>💥 ポップモード:</strong> タッチすると「パチッ！」と弾け飛ぶ！近くのぷにも巻き込んでドミノのように連鎖爆発！</li>
+              <li><strong>✨ フリーモード:</strong> ドラッグでぷにぷに、長押しや素早いタップでポップ！両方の楽しさを一度に満喫。</li>
+              <li><strong>🎵 ASMR音響:</strong> ヘッドホンやスピーカーで聴くと、ゼリーの瑞々しい音が耳元で心地よく響きます。</li>
+              <li><strong>🌈 連鎖コンボ:</strong> 連鎖が続くと音階が上がり、「GREAT!」「AMAZING!」「PERFECT!」の豪華演出が発動！</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- スクリプトの読み込み -->
+  <script src="audio.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
